@@ -1,20 +1,48 @@
 import { useState } from "react";
+import { QueryClient, QuesryClientProvider } from "@tanstack/react-query";
+import MovieList from "./components/MovieList";
+
+const queryClient = new QueryClient();
+const categories = {
+  trending: "trending/all/week",
+  topRated: "movie/top_rated",
+  action: "discover/movie?with_genres=28",
+  animation: "discover/movie?with_genres=16",
+  comedy: "discover/movie?with_genres=35",
+}
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <QueryClientProvider client={queryClient}>
       <nav className="bg-gray-900 text-white p-4 flex gap-4">
-        <button className="hover:underline">Trending</button>
-        <button className="hover:underline">Top Rated</button>
-        <button className="hover:underline">Action</button>
-        <button className="hover:underline">Animation</button>
-        <button className="hover:underline">Comedy</button>
+        {Object.keys(categories).map((key) => (
+          <NavLink
+            key={key}
+            to={`/${key}`}
+            className={({ isActive }) =>
+              isActive ? 'underline text-blue-300' : 'hover:underline'
+            }
+          >
+            {key.replace('_', ' ').toUpperCase()}
+          </NavLink>
+        ))}
       </nav>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold">🎬 Movie Listings Starter Ready!</h1>
-      </div>
-    </div>
-  );
+
+      <Routes>
+        <Route
+          path="/"
+          element={<MovieList type="trending" endpoint={categories.trending} />}
+        />
+        {Object.entries(categories).map(([key, endpoint]) => (
+          <Route
+            key={key}
+            path={`/${key}`}
+            element={<MovieList type={key} endpoint={endpoint} />}
+          />
+        ))}
+      </Routes>
+    </QueryClientProvider>
+  )
 }
 
-export default App;
+export default App
