@@ -5,11 +5,15 @@ const BASE_URL = 'https://api.themoviedb.org/3'
 const IMG_BASE = 'https://image.tmdb.org/t/p/w500'
 
 function MovieList({ type, endpoint }) {
-  const { data, isLoading, error } = useQuery([type], async () => {
-    const res = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`)
-    const json = await res.json()
-    return json.results.slice(0, 10)
+  const { data, isLoading, error } = useQuery({
+    queryKey: [type],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`)
+      const json = await res.json()
+      return json.results.slice(0, 10)
+    },
   })
+
 
   if (isLoading) return <p className="p-4">Loading...</p>
   if (error) return <p className="text-red-500 p-4">Error loading movies.</p>

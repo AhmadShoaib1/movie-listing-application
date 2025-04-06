@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { QueryClient, QuesryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import MovieList from "./components/MovieList";
+import { Routes, Route, NavLink } from "react-router-dom";
 
 const queryClient = new QueryClient();
 const categories = {
