@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -6,10 +8,13 @@ import './App.css'
 import Navbar from './components/navbar'
 import StoryList from './components/StoryList';
 import StoryDetails from './components/StoryDetail';
+import LeaderSearch from './components/LeaderSearch';
 
+const queryClient = new QueryClient();
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <Router>
       <Navbar />
       <Routes>
@@ -23,6 +28,7 @@ function App() {
         <Route path="/story/:id" element={<StoryDetails />} /> 
       </Routes>
     </Router>
+    </QueryClientProvider>
   );
 }
 
