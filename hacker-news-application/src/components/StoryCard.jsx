@@ -12,10 +12,15 @@ function StoryCard({ storyId }) {
     if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching story details</div>;
   return (
-    <div>
-      <h3>{data.Title}</h3>
+    <div className="bg-white p-4 rounded shadow">
+      <a href={data.url} target="_blank" rel="noopener noreferrer">
+        <h3 className="text-lg font-semibold">{data.title}</h3>
+      </a>
+      <p>{data.score} points by {data.by}</p>
+      <p>{new Date(data.time * 1000).toLocaleString()}</p>
     </div>
   );
+  
 }
 
 export default StoryCard;
