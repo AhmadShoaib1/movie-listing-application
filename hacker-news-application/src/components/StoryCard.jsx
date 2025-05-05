@@ -1,5 +1,6 @@
 import { useQuery } from 'react-query';
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "./ui/card";
+
 
 const fetchStoryDetails = async (storyId) => {
   const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json?print=pretty`);
