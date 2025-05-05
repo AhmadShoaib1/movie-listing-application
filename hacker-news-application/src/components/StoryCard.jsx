@@ -8,9 +8,12 @@ const fetchStoryDetails = async (storyId) => {
   
 
 function StoryCard({ storyId }) {
+    const { data, error, isLoading } = useQuery(['story', storyId], () => fetchStoryDetails(storyId));
+    if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching story details</div>;
   return (
     <div>
-      <h3>Story Title</h3>
+      <h3>{data.Title}</h3>
     </div>
   );
 }
