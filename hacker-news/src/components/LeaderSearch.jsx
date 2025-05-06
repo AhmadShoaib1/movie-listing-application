@@ -1,85 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 
-const leaders = [
-  {
-    id: "jl",
-    name: "John L.",
-    karma: 5000,
-    created: 1293891200,
-    about: "John is a software developer and Hacker News contributor.",
-    submitted: [1, 2, 3, 4, 5]
-  },
-  {
-    id: "pg",
-    name: "Paul G.",
-    karma: 2500,
-    created: 1320766400,
-    about: "Paul is a data scientist who loves contributing to open-source.",
-    submitted: [6, 7, 8, 9]
-  },
-  {
-    id: "ab",
-    name: "Alice B.",
-    karma: 3000,
-    created: 1428240000,
-    about: "Alice is a tech enthusiast and a regular contributor on Hacker News.",
-    submitted: [10, 11, 12, 13, 14]
-  },
-];
+const knownUsers = ["pg", "dang", "sama", "tptacek", "jl"];
 
-function LeaderSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLeader, setSelectedLeader] = useState(null);
+const LeaderSearch = () => {
+  const [userId, setUserId] = useState("");
+  const [leaderInfo, setLeaderInfo] = useState(null);
+  const [error, setError] = useState("");
 
-  const filteredLeaders = leaders.filter((leader) =>
-    leader.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const fetchLeaderData = async (id) => {
+    try {
+      const res = await fetch(`https://hacker-news.firebaseio.com/v0/user/${id}.json?print=pretty`);
+      const data = await res.json();
+      if (!data) {
+        setError("User not found.");
+        setLeaderInfo(null);
+      } else {
+        setLeaderInfo(data);
+        setError("");
+      }
+    } catch (err) {
+      setError("Failed to fetch user data.");
+      setLeaderInfo(null);
+    }
+  };
 
-  const handleLeaderClick = (leader) => {
-    setSelectedLeader(leader);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (userId.trim() !== "") {
+      fetchLeaderData(userId.trim());
+    }
   };
 
   return (
-    <div>
-      <h1>Leader Search</h1>
-      <input
-        type="text"
-        placeholder="Search for a leader"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="p-2 border border-gray-300 rounded mb-4"
-      />
-      
-      {filteredLeaders.length > 0 ? (
-        <ul>
-          {filteredLeaders.map((leader) => (
-            <li
-              key={leader.id}
-              onClick={() => handleLeaderClick(leader)}
-              className="cursor-pointer hover:text-blue-500"
-            >
-              {leader.name}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No leaders found.</p>
-      )}
+    <div className="p-6 max-w-xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Leader Search</h2>
 
-      {/* Display selected leader's details */}
-      {selectedLeader && (
-        <div className="mt-4 p-4 bg-white shadow rounded">
-          <h2 className="text-2xl font-semibold">{selectedLeader.name}</h2>
-          <p><strong>Id:</strong> {selectedLeader.id}</p>
-          <p><strong>Karma:</strong> {selectedLeader.karma}</p>
-          <p><strong>About:</strong> {selectedLeader.about}</p>
-          <p><strong>Created:</strong> {new Date(selectedLeader.created * 1000).toLocaleDateString()}</p>
-          <p><strong>Submitted:</strong></p>
-          <ul>
-            {selectedLeader.submitted.slice(0, 5).map((id) => (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <select
+          className="w-full p-2 border rounded-md"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+        >
+          <option value="">Select a known user</option>
+          {knownUsers.map((user) => (
+            <option key={user} value={user}>
+              {user}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Search
+        </button>
+      </form>
+
+      {error && <p className="text-red-600 mt-4">{error}</p>}
+
+      {leaderInfo && (
+        <div className="mt-6 border p-4 rounded shadow bg-white">
+          <h3 className="text-xl font-semibold mb-2">{leaderInfo.id}</h3>
+          <p>Karma: {leaderInfo.karma}</p>
+          <p>Created: {new Date(leaderInfo.created * 1000).toLocaleString()}</p>
+          <p className="mt-2 font-medium">Submitted Items:</p>
+          <ul className="list-disc list-inside text-sm text-blue-700">
+            {leaderInfo.submitted.slice(0, 5).map((id) => (
               <li key={id}>
-                <a href={`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`} target="_blank" rel="noopener noreferrer">
-                  {`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`}
+                <a
+                  href={`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Item {id}
                 </a>
               </li>
             ))}
@@ -88,6 +82,6 @@ function LeaderSearch() {
       )}
     </div>
   );
-}
+};
 
 export default LeaderSearch;
