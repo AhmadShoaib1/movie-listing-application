@@ -1,29 +1,37 @@
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from 'react-router-dom';
 
-const fetchStoryDetails = async (storyId) => {
-  const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json?print=pretty`);
-  const data = await res.json();
-  return data;
+const fetchStoryDetails = async (id) => {
+  const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`);
+  return res.json();
 };
 
-function StoryDetails() {
-  const { id } = useParams(); // Get story ID from URL
-  const { data, error, isLoading } = useQuery(['story', id], () => fetchStoryDetails(id));
+const StoryDetail = () => {
+  const { id } = useParams();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching story details</div>;
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["story-detail", id],
+    queryFn: () => fetchStoryDetails(id),
+  });
+
+  if (isLoading) return <p>Loading story...</p>;
+  if (isError || !data) return <p>Error loading story</p>;
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="text-lg font-semibold">{data.title}</h3>
-      <p>By: {data.by}</p>
-      <p>Score: {data.score}</p>
-      <p>Type: {data.type}</p>
-      <p>URL: <a href={data.url} target="_blank" rel="noopener noreferrer">{data.url}</a></p>
-      <p>{new Date(data.time * 1000).toLocaleString()}</p>
+    <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-2">
+        <a href={data.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+          {data.title}
+        </a>
+      </h2>
+      <p className="text-sm text-gray-700 mb-2">
+        {data.score} points by {data.by} — {new Date(data.time * 1000).toLocaleString()}
+      </p>
+      {data.text && (
+        <div className="prose mt-4" dangerouslySetInnerHTML={{ __html: data.text }} />
+      )}
     </div>
   );
-}
+};
 
-export default StoryDetails;
+export default StoryDetail;

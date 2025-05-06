@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const fetchStoryDetail = async (storyId) => {
   const res = await fetch(
@@ -22,14 +23,9 @@ const StoryCard = ({ storyId }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
-      <a
-        href={story.url}
-        className="text-blue-600 font-bold text-lg hover:underline"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {story.title}
-      </a>
+      <Link to={`/story/${story.id}`} className="text-blue-600 font-bold text-lg hover:underline">
+  {story.title}
+</Link>
       <p className="text-sm text-gray-700">
         {story.score} points by {story.by}
       </p>
