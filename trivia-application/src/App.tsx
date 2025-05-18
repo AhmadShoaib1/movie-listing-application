@@ -4,11 +4,12 @@ import { shuffleArray } from "./utils/shuffle";
 import type { TriviaQuestion } from "./utils/fetchtrivia";
 import Quiz from "./components/quiz";
 import QuizResults from "./components/quizresult";
+import DifficultyDropdown from "./components/diffculty";
 
 
 const username = "Anonymous";
-const category = "General";   
-const difficulty = "medium";  
+const category = "General";
+const difficulty = "medium";
 
 function App() {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
@@ -16,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [difficulty, setDifficulty] = useState("any");
+
 
   useEffect(() => {
     fetchTriviaQuestions().then((data) => {
@@ -32,35 +35,43 @@ function App() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  let newScore = 0;
+    e.preventDefault();
+    let newScore = 0;
 
-  questions.forEach((q, i) => {
-    if (selectedAnswer[i] === q.correct_answer) {
-      newScore++;
-    }
-  });
+    questions.forEach((q, i) => {
+      if (selectedAnswer[i] === q.correct_answer) {
+        newScore++;
+      }
+    });
 
-  setScore(newScore);
-  setSubmitted(true);
+    setScore(newScore);
+    setSubmitted(true);
 
-  const result = {
-    name: username,
-    score: newScore,
-    category: category,
-    difficulty: difficulty,
-    timestamp: new Date().toISOString(),
+    const result = {
+      name: username,
+      score: newScore,
+      category: category,
+      difficulty: difficulty,
+      timestamp: new Date().toISOString(),
+    };
+
+    const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
+    const updated = [...existing, result];
+    localStorage.setItem("trivia_scores", JSON.stringify(updated));
   };
-
-  const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
-  const updated = [...existing, result];
-  localStorage.setItem("trivia_scores", JSON.stringify(updated));
-};
 
 
   return (
     <div>
       <h1>Trivia Quiz</h1>
+
+      {!submitted && !loading && (
+        <DifficultyDropdown
+          value={difficulty}
+          onChange={setDifficulty}
+        />
+      )}
+
       {loading ? (
         <p>Loading...</p>
       ) : submitted ? (
@@ -74,7 +85,7 @@ function App() {
         />
       )}
     </div>
+
   );
 }
-
 export default App;
