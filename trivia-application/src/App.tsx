@@ -1,24 +1,38 @@
 import { useEffect } from "react";
-
-const fetchTriviaQuestions = async () => {
-  const response = await fetch("https://opentdb.com/api.php?amount=10");
-  const data = await response.json();
-
-  if (data.response_code !== 0) {
-    throw new Error("Failed to fetch trivia questions.");
-  }
-
-  console.log(data.results);
-};
+import { fetchTriviaQuestions } from "./utils/fetchtrivia";
+import type { TriviaQuestion } from "./utils/fetchtrivia";
+import { useState } from "react";
 
 function App() {
+  const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    fetchTriviaQuestions();
+    fetchTriviaQuestions()
+      .then((data) => {
+        setQuestions(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   return (
     <div>
-      <h1>Trivia App</h1>
+      <h1>Trivia Quiz</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {questions.map((q, idx) => (
+            <li key={idx}>
+              <strong dangerouslySetInnerHTML={{ __html: q.question }} />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
