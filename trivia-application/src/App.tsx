@@ -1,32 +1,38 @@
 import { useEffect, useState } from "react";
-import { fetchTriviaQuestions } from "./utils/fetchtrivia";
-import { shuffleArray } from "./utils/shuffle";
-import type { TriviaQuestion } from "./utils/fetchtrivia";
 import Quiz from "./components/quiz";
 import QuizResults from "./components/quizresult";
-import DifficultyDropdown from "./components/diffculty";
-
-
-const username = "Anonymous";
-const category = "General";
-const difficulty = "medium";
+import { shuffleArray } from "./utils/shuffle";
+import type { TriviaQuestion } from "./utils/fetchtrivia";
+import type { QuizSettings } from "./components/settings";
+import SettingsForm from "./components/settings";
 
 function App() {
+  const [settings, setSettings] = useState<QuizSettings | null>(null);
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
-  const [difficulty, setDifficulty] = useState("any");
-
 
   useEffect(() => {
-    fetchTriviaQuestions().then((data) => {
-      setQuestions(data);
-      setSelectedAnswer(new Array(data.length).fill(""));
-      setLoading(false);
-    });
-  }, []);
+    if (!settings) return;
+
+    const { amount, category, difficulty, type } = settings;
+
+    let url = `https://opentdb.com/api.php?amount=${amount}`;
+    if (category) url += `&category=${category}`;
+    if (difficulty !== "any") url += `&difficulty=${difficulty}`;
+    if (type !== "any") url += `&type=${type}`;
+
+    setLoading(true);
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setQuestions(data.results);
+        setSelectedAnswer(new Array(data.results.length).fill(""));
+        setLoading(false);
+      });
+  }, [settings]);
 
   const handleAnswerChange = (questionIndex: number, answer: string) => {
     const updated = [...selectedAnswer];
@@ -36,8 +42,8 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    let newScore = 0;
 
+    let newScore = 0;
     questions.forEach((q, i) => {
       if (selectedAnswer[i] === q.correct_answer) {
         newScore++;
@@ -48,10 +54,10 @@ function App() {
     setSubmitted(true);
 
     const result = {
-      name: username,
+      name: settings?.name || "Anonymous",
       score: newScore,
-      category: category,
-      difficulty: difficulty,
+      category: settings?.category || "Any",
+      difficulty: settings?.difficulty || "any",
       timestamp: new Date().toISOString(),
     };
 
@@ -60,19 +66,13 @@ function App() {
     localStorage.setItem("trivia_scores", JSON.stringify(updated));
   };
 
-
   return (
     <div>
       <h1>Trivia Quiz</h1>
 
-      {!submitted && !loading && (
-        <DifficultyDropdown
-          value={difficulty}
-          onChange={setDifficulty}
-        />
-      )}
-
-      {loading ? (
+      {!settings ? (
+        <SettingsForm onSubmit={setSettings} />
+      ) : loading ? (
         <p>Loading...</p>
       ) : submitted ? (
         <QuizResults score={score} total={questions.length} />
@@ -85,7 +85,7 @@ function App() {
         />
       )}
     </div>
-
   );
 }
+
 export default App;
