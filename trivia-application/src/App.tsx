@@ -5,6 +5,11 @@ import type { TriviaQuestion } from "./utils/fetchtrivia";
 import Quiz from "./components/quiz";
 import QuizResults from "./components/quizresult";
 
+
+const username = "Anonymous";
+const category = "General";   
+const difficulty = "medium";  
+
 function App() {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
@@ -27,16 +32,31 @@ function App() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    let newScore = 0;
-    questions.forEach((q, i) => {
-      if (selectedAnswer[i] === q.correct_answer) {
-        newScore++;
-      }
-    });
-    setScore(newScore);
-    setSubmitted(true);
+  e.preventDefault();
+  let newScore = 0;
+
+  questions.forEach((q, i) => {
+    if (selectedAnswer[i] === q.correct_answer) {
+      newScore++;
+    }
+  });
+
+  setScore(newScore);
+  setSubmitted(true);
+
+  const result = {
+    name: username,
+    score: newScore,
+    category: category,
+    difficulty: difficulty,
+    timestamp: new Date().toISOString(),
   };
+
+  const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
+  const updated = [...existing, result];
+  localStorage.setItem("trivia_scores", JSON.stringify(updated));
+};
+
 
   return (
     <div>
