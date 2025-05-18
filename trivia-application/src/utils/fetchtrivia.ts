@@ -12,6 +12,14 @@ export const fetchTriviaQuestions = async (): Promise<TriviaQuestion[]> => {
   if (data.response_code !== 0) {
     throw new Error("Failed to fetch trivia questions");
   }
+  
 
   return data.results;
 };
+export function shuffleArray<T>(array: T[]): T[] {
+  return array
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
+
