@@ -1,63 +1,57 @@
-import { useEffect } from "react";
-import { fetchTriviaQuestions, shuffleArray } from "./utils/fetchtrivia";
+import { useEffect, useState } from "react";
+import { fetchTriviaQuestions } from "./utils/fetchtrivia";
+import { shuffleArray } from "./utils/shuffle";
 import type { TriviaQuestion } from "./utils/fetchtrivia";
-import { useState } from "react";
+import Quiz from "./components/quiz";
+import QuizResults from "./components/quizresult";
 
 function App() {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
-    fetchTriviaQuestions()
-      .then((data) => {
-        setQuestions(data);
-        setSelectedAnswer(new Array(data.length).fill(""));
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+    fetchTriviaQuestions().then((data) => {
+      setQuestions(data);
+      setSelectedAnswer(new Array(data.length).fill(""));
+      setLoading(false);
+    });
   }, []);
 
-  const handleOptionChange = (questionIndex: number, answer: string) => {
-    const updatedAnswers = [...selectedAnswer];
-    updatedAnswers[questionIndex] = answer;
-    setSelectedAnswer(updatedAnswers);
-  }
+  const handleAnswerChange = (questionIndex: number, answer: string) => {
+    const updated = [...selectedAnswer];
+    updated[questionIndex] = answer;
+    setSelectedAnswer(updated);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    let newScore = 0;
+    questions.forEach((q, i) => {
+      if (selectedAnswer[i] === q.correct_answer) {
+        newScore++;
+      }
+    });
+    setScore(newScore);
+    setSubmitted(true);
+  };
+
   return (
     <div>
       <h1>Trivia Quiz</h1>
       {loading ? (
         <p>Loading...</p>
+      ) : submitted ? (
+        <QuizResults score={score} total={questions.length} />
       ) : (
-        <form>
-          {questions.map((q, index) => {
-            const options = shuffleArray([
-              q.correct_answer,
-              ...q.incorrect_answers,
-            ]);
-
-            return (
-              <div key={index}>
-                <p dangerouslySetInnerHTML={{ __html: q.question }} />
-                {options.map((opt, i) => (
-                  <label key={i}>
-                    <input
-                      type="radio"
-                      name={`question-${index}`}
-                      value={opt}
-                      checked={selectedAnswer[index] === opt}
-                      onChange={() => handleOptionChange(index, opt)}
-                    />
-                    <span dangerouslySetInnerHTML={{ __html: opt }} />
-                  </label>
-                ))}
-              </div>
-            );
-          })}
-        </form>
+        <Quiz
+          questions={questions}
+          selectedAnswer={selectedAnswer}
+          onAnswerChange={handleAnswerChange}
+          onSubmit={handleSubmit}
+        />
       )}
     </div>
   );
