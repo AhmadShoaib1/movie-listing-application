@@ -47,20 +47,21 @@ const SettingsForm = ({ onSubmit }: Props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}
-    className="max-w-mx mx-atuo p-6 bg-white rounded-lg shadow space-y-4">
-      <div>
-        <label>Name:</label>
-        <input {...register("name")} />
+    className="max-w-mx mx-auto p-6 bg-white rounded-lg shadow space-y-4">
+      <div className=" flex flex-col">
+        <label className="font-medium">Name:</label>
+        <input {...register("name")} className="border rounded px-3 py-2 mt-1"/>
       </div>
 
       <div className="flex flex-col">
-        <label>Amount:</label>
-        <input type="number" {...register("amount", { valueAsNumber: true })} />
+        <label className="font-medium">Amount:</label>
+        <input type="number" {...register("amount", { valueAsNumber: true })}className="border rounded px-3 py-2 mt-1" />
       </div>
 
-      <div>
-        <label>Category:</label>
-        <select {...register("category")}>
+      <div className="flex flex-col">
+        <label className="font-medium">Category:</label>
+        <select {...register("category")}
+        className="border rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
           <option value="">Any Category</option>
           {!isLoading &&
             categories?.map((cat: any) => (
@@ -71,9 +72,10 @@ const SettingsForm = ({ onSubmit }: Props) => {
         </select>
       </div>
 
-      <div>
-        <label>Difficulty:</label>
-        <select {...register("difficulty")}>
+      <div className="flex flex-col">
+        <label className="font-medium">Difficulty:</label>
+        <select {...register("difficulty")}
+         className="border rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
           <option value="any">Any Difficulty</option>
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
@@ -81,16 +83,24 @@ const SettingsForm = ({ onSubmit }: Props) => {
         </select>
       </div>
 
-      <div>
-        <label>Type:</label>
-        <select {...register("type")}>
+      <div className="flex flex-col">
+        <label className="font-medium">Type:</label>
+        <select {...register("type")}
+        className="border rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           <option value="any">Any Type</option>
           <option value="multiple">Multiple Choice</option>
           <option value="boolean">True/False</option>
         </select>
       </div>
 
-      <button type="submit" disabled={isSubmitting}>Start Quiz</button>
+      <button
+      type="submit"
+      disabled={isSubmitting}
+      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Start Quiz
+    </button>
     </form>
   );
 };
