@@ -5,6 +5,7 @@ import { shuffleArray } from "./utils/shuffle";
 import type { TriviaQuestion } from "./utils/fetchtrivia";
 import type { QuizSettings } from "./components/settings";
 import SettingsForm from "./components/settings";
+import Leaderboard from "./components/leaderboad";
 
 function App() {
   const [settings, setSettings] = useState<QuizSettings | null>(null);
@@ -99,6 +100,7 @@ function App() {
       )}
     </div>
   );
+  <Leaderboard/>
 }
 
 export default App;
