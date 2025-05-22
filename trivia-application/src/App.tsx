@@ -61,6 +61,16 @@ function App() {
       timestamp: new Date().toISOString(),
     };
 
+    const handleRestart = () => {
+      setSettings(null);
+      setQuestions([]);
+      setSelectedAnswer([]);
+      setScore(0);
+      setSubmitted(false);
+      setLoading(false);
+    };
+    
+
     const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
     const updated = [...existing, result];
     localStorage.setItem("trivia_scores", JSON.stringify(updated));
@@ -75,7 +85,10 @@ function App() {
       ) : loading ? (
         <p>Loading...</p>
       ) : submitted ? (
-        <QuizResults score={score} total={questions.length} />
+        <QuizResults 
+        score={score}
+        total={questions.length}
+        onRestart={handleRestart}/>
       ) : (
         <Quiz
           questions={questions}
