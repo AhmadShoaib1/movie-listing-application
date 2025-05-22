@@ -76,7 +76,7 @@ function App() {
     setSubmitted(false);
     setLoading(false);
   };
-  
+
 
   return (
     <div>
@@ -99,9 +99,9 @@ function App() {
           onSubmit={handleSubmit}
         />
       )}
+        <Leaderboard/>
     </div>
   );
-  <Leaderboard/>
 }
 
 export default App;
