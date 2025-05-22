@@ -1,3 +1,5 @@
+import {useEffect, useState} from "react"
+
 type ScoreEntry = {
   name: string;
   score: number;
@@ -7,6 +9,14 @@ type ScoreEntry = {
 };
 
 const Leaderboard = () => {
+    const [scores, setScores] = useState<ScoreEntry[]>([]);
+    useEffect(()=>{
+    const stored = JSON.parse(localStorage.getItem("trivia_scores") || "[}");
+    setScores(stored);
+    }, []);
+
+
+
   const allScores: ScoreEntry[] = JSON.parse(
     localStorage.getItem("trivia_scores") || "[]"
   );
