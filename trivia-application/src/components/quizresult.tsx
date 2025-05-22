@@ -5,8 +5,7 @@ type Props = {
 };
 
 const QuizResults: React.FC<Props> = ({ score, total, onRestart }) => {
-  return 
-  (
+  return (
     <div>
       <h2>Results</h2>
       <p>You scored {score} out of {total}</p>

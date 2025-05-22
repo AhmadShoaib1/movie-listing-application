@@ -81,16 +81,17 @@ function App() {
   return (
     <div>
       <h1>Trivia Quiz</h1>
-
+  
       {!settings ? (
         <SettingsForm onSubmit={setSettings} />
       ) : loading ? (
         <p>Loading...</p>
       ) : submitted ? (
-        <QuizResults 
-        score={score}
-        total={questions.length}
-        onRestart={handleRestart}/>
+        <QuizResults
+          score={score}
+          total={questions.length}
+          onRestart={handleRestart}
+        />
       ) : (
         <Quiz
           questions={questions}
@@ -99,9 +100,11 @@ function App() {
           onSubmit={handleSubmit}
         />
       )}
-        <Leaderboard/>
+  
+      <Leaderboard />
     </div>
   );
+  
 }
 
 export default App;
