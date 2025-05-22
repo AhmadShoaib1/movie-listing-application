@@ -31,16 +31,16 @@ function App() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        if (data.respons_code ! == 0 || !data.results || data.results.length === 0 ){
+        if (data.response_code !== 0 || !Array.isArray(data.results) || data.results.length === 0 ){
           throw new Error ("no question foind on the selected settings");
         }
 
-        setQuestions(data.Results);
-        setSelectedAnswer(new Array(data.Results.length).fill(""));
+        setQuestions(data.results);
+        setSelectedAnswer(new Array(data.results.length).fill(""));
         setLoading(false);
       })
       .catch((err)=>{
-        console.error("fetch failed", error);
+        console.error("fetch failed", err);
         setError(err.message || "something went wrong");
         setLoading(false)
       })
@@ -104,6 +104,8 @@ function App() {
           total={questions.length}
           onRestart={handleRestart}
         />
+      ) :!questions || questions.length === 0 ? (
+        <p>No quiz data available.</p>
       ) : (
         <Quiz
           questions={questions}

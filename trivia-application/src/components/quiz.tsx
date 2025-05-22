@@ -15,6 +15,9 @@ const Quiz: React.FC<Props> = ({
   onAnswerChange,
   onSubmit,
 }) => {
+  if (!questions || questions.length === 0) {
+    return <p>No questions to show.</p>;
+  }
   return (
     <form onSubmit={onSubmit}>
       {questions.map((q, index) => {
