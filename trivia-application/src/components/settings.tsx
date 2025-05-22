@@ -46,13 +46,14 @@ const SettingsForm = ({ onSubmit }: Props) => {
   }, [setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}
+    className="max-w-mx mx-atuo p-6 bg-white rounded-lg shadow space-y-4">
       <div>
         <label>Name:</label>
         <input {...register("name")} />
       </div>
 
-      <div>
+      <div className="flex flex-col">
         <label>Amount:</label>
         <input type="number" {...register("amount", { valueAsNumber: true })} />
       </div>
