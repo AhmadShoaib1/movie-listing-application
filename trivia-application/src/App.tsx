@@ -14,6 +14,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!settings) return;
@@ -26,13 +27,24 @@ function App() {
     if (type !== "any") url += `&type=${type}`;
 
     setLoading(true);
+    setError(null);
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setQuestions(data.results);
-        setSelectedAnswer(new Array(data.results.length).fill(""));
+        if (data.respons_code ! == 0 || !data.results || data.results.length === 0 ){
+          throw new Error ("no question foind on the selected settings");
+        }
+
+        setQuestions(data.Results);
+        setSelectedAnswer(new Array(data.Results.length).fill(""));
         setLoading(false);
-      });
+      })
+      .catch((err)=>{
+        console.error("fetch failed", error);
+        setError(err.message || "something went wrong");
+        setLoading(false)
+      })
+
   }, [settings]);
 
   const handleAnswerChange = (questionIndex: number, answer: string) => {
@@ -81,7 +93,7 @@ function App() {
   return (
     <div>
       <h1>Trivia Quiz</h1>
-  
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {!settings ? (
         <SettingsForm onSubmit={setSettings} />
       ) : loading ? (
