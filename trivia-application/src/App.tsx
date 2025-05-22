@@ -61,21 +61,22 @@ function App() {
       difficulty: settings?.difficulty || "any",
       timestamp: new Date().toISOString(),
     };
-
-    const handleRestart = () => {
-      setSettings(null);
-      setQuestions([]);
-      setSelectedAnswer([]);
-      setScore(0);
-      setSubmitted(false);
-      setLoading(false);
-    };
     
 
     const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
     const updated = [...existing, result];
     localStorage.setItem("trivia_scores", JSON.stringify(updated));
   };
+
+  const handleRestart = () => {
+    setSettings(null);
+    setQuestions([]);
+    setSelectedAnswer([]);
+    setScore(0);
+    setSubmitted(false);
+    setLoading(false);
+  };
+  
 
   return (
     <div>
