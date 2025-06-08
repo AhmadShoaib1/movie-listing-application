@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount, createEffect } from "solid-js";
 import TodoInput from "./components/todoinput";
 import FilterButtons from "./components/filterbutton";
 import TodoList from "./components/todolist";
@@ -6,6 +6,21 @@ import TodoList from "./components/todolist";
 function App() {
   const [filter, setFilter] = createSignal("all");
   const [todos, setTodos] = createSignal([]);
+
+  onMount(() => {
+    const saved = localStorage.getItem("todos");
+    if (saved) {
+        try {
+            setTodos(JSON.parse(saved));
+        }catch (error) {
+            console.error("invalid local storage data:", error);
+        }
+    }
+    });
+
+    createEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos()));
+    });
 
   const addTodo = (text) =>
     setTodos([...todos(), { id: Date.now(), text, completed: false }]);
