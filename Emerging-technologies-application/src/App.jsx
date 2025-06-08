@@ -42,8 +42,9 @@ function App() {
   };
 
   return (
-    <main class="max-w-xl mx-auto p-6">
-      <h1 class="text-2xl font-bold mb-4 text-red-500">📝 Todo List</h1>
+    <main class="min-h-screen bg-gray-100 py-10 px-4">
+        <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+      <h1 class="text-4xl font-bold text-blue-700 mb-6 text-center tracking-tight">📝 Todo List</h1>
       <TodoInput onAdd={addTodo} />
       <FilterButtons
         currentFilter={filter()}
@@ -55,7 +56,9 @@ function App() {
         onEdit={editTodo}
         onDelete={deleteTodo}
       />
+      </div>
     </main>
+    
   );
 }
 
