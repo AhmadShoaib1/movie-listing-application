@@ -15,8 +15,12 @@ const Quiz: React.FC<Props> = ({
   onAnswerChange,
   onSubmit,
 }) => {
+  if (!questions || questions.length === 0) {
+    return <p>No questions to show.</p>;
+  }
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}
+    className="max-w-3xl mx-auto space-y-6 p-6 bg-white rounded-lg shadow">
       {questions.map((q, index) => {
         const options = shuffleArray([
           q.correct_answer,
@@ -24,10 +28,11 @@ const Quiz: React.FC<Props> = ({
         ]);
 
         return (
-          <div key={index}>
-            <p dangerouslySetInnerHTML={{ __html: q.question }} />
+          <div key={index}
+          className="p-4 border border-gray-300 rounded-md shadow-sm bg-gray-50">
+            <p className="font-semibold mb-2" dangerouslySetInnerHTML={{ __html: q.question }} />
             {options.map((opt, i) => (
-              <label key={i}>
+              <label key={i} className="block mb-1">
                 <input
                   type="radio"
                   name={`question-${index}`}
@@ -41,7 +46,7 @@ const Quiz: React.FC<Props> = ({
           </div>
         );
       })}
-      <button type="submit">Submit Answers</button>
+      <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 mt-4">Submit Answers</button>
     </form>
   );
 };

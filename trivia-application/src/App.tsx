@@ -5,6 +5,7 @@ import { shuffleArray } from "./utils/shuffle";
 import type { TriviaQuestion } from "./utils/fetchtrivia";
 import type { QuizSettings } from "./components/settings";
 import SettingsForm from "./components/settings";
+import Leaderboard from "./components/leaderboad";
 
 function App() {
   const [settings, setSettings] = useState<QuizSettings | null>(null);
@@ -13,6 +14,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!settings) return;
@@ -25,13 +27,24 @@ function App() {
     if (type !== "any") url += `&type=${type}`;
 
     setLoading(true);
+    setError(null);
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
+        if (data.response_code !== 0 || !Array.isArray(data.results) || data.results.length === 0 ){
+          throw new Error ("no question foind on the selected settings");
+        }
+
         setQuestions(data.results);
         setSelectedAnswer(new Array(data.results.length).fill(""));
         setLoading(false);
-      });
+      })
+      .catch((err)=>{
+        console.error("fetch failed", err);
+        setError(err.message || "something went wrong");
+        setLoading(false)
+      })
+
   }, [settings]);
 
   const handleAnswerChange = (questionIndex: number, answer: string) => {
@@ -60,22 +73,39 @@ function App() {
       difficulty: settings?.difficulty || "any",
       timestamp: new Date().toISOString(),
     };
+    
 
     const existing = JSON.parse(localStorage.getItem("trivia_scores") || "[]");
     const updated = [...existing, result];
     localStorage.setItem("trivia_scores", JSON.stringify(updated));
   };
 
+  const handleRestart = () => {
+    setSettings(null);
+    setQuestions([]);
+    setSelectedAnswer([]);
+    setScore(0);
+    setSubmitted(false);
+    setLoading(false);
+  };
+
+
   return (
     <div>
       <h1>Trivia Quiz</h1>
-
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {!settings ? (
         <SettingsForm onSubmit={setSettings} />
       ) : loading ? (
         <p>Loading...</p>
       ) : submitted ? (
-        <QuizResults score={score} total={questions.length} />
+        <QuizResults
+          score={score}
+          total={questions.length}
+          onRestart={handleRestart}
+        />
+      ) :!questions || questions.length === 0 ? (
+        <p>No quiz data available.</p>
       ) : (
         <Quiz
           questions={questions}
@@ -84,8 +114,11 @@ function App() {
           onSubmit={handleSubmit}
         />
       )}
+  
+      <Leaderboard />
     </div>
   );
+  
 }
 
 export default App;
