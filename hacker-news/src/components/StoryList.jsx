@@ -30,7 +30,7 @@ const StoryList = ({ category }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {storyIds.slice(0, 10).map((id) => (
+      {storyIds.slice(0, 25).map((id) => (
         <StoryCard key={id} storyId={id} />
       ))}
     </div>
