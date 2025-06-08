@@ -23,7 +23,7 @@ function TodoInput(props) {
         value={input()}
         onInput={(e) => setInput(e.target.value)}
       />
-      <button class="bg-blue-600 text-white px-4 py-2" onClick={handleAdd}>
+      <button class="bg-blue-600 text-red px-4 py-2" onClick={handleAdd}>
         Add
       </button>
     </div>

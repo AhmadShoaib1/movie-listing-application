@@ -2,6 +2,7 @@ import { createSignal, onMount, createEffect } from "solid-js";
 import TodoInput from "./components/todoinput";
 import FilterButtons from "./components/filterbutton";
 import TodoList from "./components/todolist";
+import "./index.css";
 
 function App() {
   const [filter, setFilter] = createSignal("all");
@@ -42,7 +43,7 @@ function App() {
 
   return (
     <main class="max-w-xl mx-auto p-6">
-      <h1 class="text-2xl font-bold mb-4">📝 Todo List</h1>
+      <h1 class="text-2xl font-bold mb-4 text-red-500">📝 Todo List</h1>
       <TodoInput onAdd={addTodo} />
       <FilterButtons
         currentFilter={filter()}

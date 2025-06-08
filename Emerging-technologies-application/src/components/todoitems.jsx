@@ -13,7 +13,7 @@ function TodoItem(props) {
         value={todo.text}
         onInput={(e) => onEdit(todo.id, e.target.value)}
       />
-      <button class="text-red-600" onClick={() => onDelete(todo.id)}>
+      <button class="text-red-800" onClick={() => onDelete(todo.id)}>
         Delete
       </button>
     </li>
