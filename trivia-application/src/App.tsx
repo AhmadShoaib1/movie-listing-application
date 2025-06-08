@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Quiz from "./components/quiz";
 import QuizResults from "./components/quizresult";
-import { shuffleArray } from "./utils/shuffle";
 import type { TriviaQuestion } from "./utils/fetchtrivia";
 import type { QuizSettings } from "./components/settings";
 import SettingsForm from "./components/settings";
