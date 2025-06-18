@@ -8,10 +8,10 @@ Each milestone showcases a different frontend concept using modern frameworks an
 
 | Milestone | Application                    | Framework     | Description                                                 | Live Demo |
 |-----------|--------------------------------|----------------|-------------------------------------------------------------|-----------|
-| 1         | **Movie Listings App**         | React + Vite   | Displays trending and categorized movies using TMDB API     | [View](https://movie-listing-application-taxm.vercel.app/) |
-| 2         | **Hacker News Reader**         | React + Vite   | Shows latest stories from Hacker News with leader search    | [View](https://movie-listing-application-qmzw.vercel.app/) |
-| 3         | **Trivia Quiz App**            | React + Vite   | Custom quiz generator using OpenTDB API with leaderboard    | [View](https://movie-listing-application-2c12.vercel.app/) |
-| 4         | **Emerging Tech Todo (Solid)** | Solid.js       | A todo list built with Solid.js featuring full CRUD + filter| [View](https://movie-listing-application.vercel.app/) |
+| 1         | **Movie Listings App**         | React + Vite   | Displays trending and categorized movies using TMDB API     | [View](https://movie-listing-application.vercel.app/) |
+| 2         | **Hacker News Reader**         | React + Vite   | Shows latest stories from Hacker News with leader search    | [View](https://movie-listing-application-2c12.vercel.app/) |
+| 3         | **Trivia Quiz App**            | React + Vite   | Custom quiz generator using OpenTDB API with leaderboard    | [View](https://movie-listing-application-taxm.vercel.app/) |
+| 4         | **Emerging Tech Todo (Solid)** | Solid.js       | A todo list built with Solid.js featuring full CRUD + filter| [View](https://movie-listing-application-qmzw.vercel.app/) |
 
 ---
 
